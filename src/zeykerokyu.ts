@@ -50,10 +50,6 @@ export async function getCourse(courseId: number): Promise<Course> {
 const vocabInLessonCombinedDefinition = `
 with vocab_in_lesson_combined as (
 	select * from vocab_in_lesson
-	union
-	select 2, 0, row_number() over (), vocab, ""
-		from favorite_words
-		where user == ?1
 )\n`;
 
 /// Returns a list of available lessons in a course, with statistics for the
@@ -113,6 +109,7 @@ export async function getLesson(courseId: number, lessonId: number): Promise<Les
 type UnprocessedLearnableItem = { 'vocab': number, 'comment'?: string };
 
 export async function getItemsForLesson(courseId: number, lessonId: number, user: Express.User): Promise<LearnableItem[]> {
+        console.log("courseId",courseId);
 	return new Promise((fulfill, reject) => {
 		db.all(vocabInLessonCombinedDefinition +
 			`select v.vocab, v.comment from vocab_in_lesson_combined v
@@ -129,19 +126,26 @@ export async function getItemsForLesson(courseId: number, lessonId: number, user
 
 function vocabIDsToWordData(items: UnprocessedLearnableItem[]): LearnableItem[] {
 	let result: LearnableItem[] = [];
+        console.log("items",items);
 	for (let item of items) {
-		let resultItem: LearnableItem = { 
-			'vocab': reykunyu.getWord(item['vocab'])
-		};
-		if (item['comment']) {
-			resultItem['comment'] = item['comment'];
-		}
-		result.push(resultItem);
+                try {
+                    let resultItem: LearnableItem = { 
+                            'vocab': reykunyu.getWord(item['vocab'])
+                    };
+                    if (item['comment']) {
+                            resultItem['comment'] = item['comment'];
+                    }
+                    result.push(resultItem);
+                } catch (error) {
+                    console.error(error);
+                    continue;
+                }
 	}
 	return result;
 }
 
 export async function getLearnableItemsForLesson(courseId: number, lessonId: number, user: Express.User): Promise<LearnableItem[]> {
+        console.log("learnable for",courseId);
 	return new Promise((fulfill, reject) => {
 		db.all(vocabInLessonCombinedDefinition +
 			`select v.vocab, v.comment from vocab_in_lesson_combined v

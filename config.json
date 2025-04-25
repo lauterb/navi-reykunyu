@@ -1,5 +1,5 @@
 {
     "port": 3000,
-    "secret": "much secret, wow (replace this by something random)",
+    "secret": "secrete",
     "development": true
 }
