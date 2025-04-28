@@ -67,31 +67,6 @@ db.serialize(() => {
 for the vocab study tool. This file does not seem to be present. This
 warning is harmless, but the vocab study tool won't work.`);
 		}
-        //delete_zombies();
-        let arr = [1,2,3];
-        let v:number[]  = [];
-            db.all('select distinct vocab from vocab_status union select vocab from favorite_words',(err:any,vocabs:number[]) =>
-            {
-                if (err){
-                    console.log(err);
-                }
-                console.log("here be vocabs",vocabs);
-            }
-        );
-        console.log("there be v",v);
-        for (let i of v) {
-            console.log("checking vocab",i);
-            let res;
-            try {
-                res = dictionary.getById(i);
-            } catch(e) {
-                console.log("error",i,e);
-                continue;
-            }
-            console.log("found",i,res);
-            //db.run('delete from vocab_status where vocab = ?',i);
-            //db.run('delete from favorite_words where vocab = ?',i);
-        }
 		for (let i = 0; i < coursesData.length; i++) {
 			const course = coursesData[i];
 			db.run(`insert into course values (?, ?, ?)`, i, course['name'], course['description']);
