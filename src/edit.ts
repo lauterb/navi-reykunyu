@@ -94,7 +94,7 @@ export function insertWordData(newData: WordData, user: Express.User): void {
 		'data': newData
 	});
 	fs.writeFileSync("./data/history.json", JSON.stringify(history));
-	console.log("debug test deleteWordData, with ${id}");
+	console.log("debug test deleteWordData, with ",id);
 	deleteWordData(id,user);
 }
 
